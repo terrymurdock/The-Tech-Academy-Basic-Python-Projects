@@ -18,6 +18,7 @@ import sqlite3
 import phonebook_main
 import phonebook_gui
 
+
 def center_window(self, w, h): # pass in teh tkinter frame (master) reference and the w and h
     # get user's screen width and height
     screen_width = self.master.winfo_screenwidth()
@@ -28,12 +29,14 @@ def center_window(self, w, h): # pass in teh tkinter frame (master) reference an
     centerGeo = self.master.geometry('{}x{}+{}+{}'.format(w, h, x, y))
     return centerGeo
 
+
 # catch if the user's clicks on the windows upper-right 'X' to ensure they want to close
 def ask_quit(self):
     if messagebox.askokcancel("Exit program","Okay to exit application?"):
         # This closes app
         self.master.destroy()
         os._exit(0)
+
 
 #====================================================================
 def create_db(self):
@@ -53,6 +56,7 @@ def create_db(self):
     conn.close()
     first_run(self)
 
+
 def first_run(self):
     data = ('John','Doe','John Doe','111-111-1111','jdoe@email.com')
     conn = sqlite3.connect('phonebook.db')
@@ -64,11 +68,13 @@ def first_run(self):
             conn.commit()
     conn.close()
 
+
 def count_records(cur):
     count = ""
     cur.execute("""SELECT COUNT(*) FROM tbl_phonebook""")
     count = cur.fetchone() [0]
     return cur,count
+
 
 # Select item in ListBox
 def onSelect(self,event):
@@ -94,6 +100,7 @@ def onSelect(self,event):
                            
             self.txt_email.delete(0,END)
             self.txt_email.insert(0,data[3])
+
 
 def addToList(self):
     var_fname = self.txt_fname.get()
@@ -133,6 +140,7 @@ def addToList(self):
     else:
         messagebox.showerror("Missing Text Error","Please ensure that there is data in all four fields.")
 
+
 def onDelete(self):
     var_select = self.lstList1.get(self.lstList1.curselection())
     conn = sqlite3.connect('phonebook.db')
@@ -156,6 +164,7 @@ def onDelete(self):
             confirm = messagebox.showerror("Last Record Error", "({}) is the last record in the database and cannot be deleted at this time. \n\nPlease add another record first before you can delete ({}).".format(var_select,var_select))
         conn.close()
 
+
 def onDeleted(self):
     # clear the text in these textboxes
     self.txt_fname.delete(0,END)
@@ -169,12 +178,14 @@ def onDeleted(self):
     except IndexError:
         pass
 
+
 def onClear(self):
     # clear the text in these textboxes
     self.txt_fname.delete(0,END)
     self.txt_lname.delete(0,END)
     self.txt_phone.delete(0,END)
     self.txt_email.delete(0,END)
+
 
 def onRefresh(self):
     # Populate the listbox, coinciding with the database
@@ -192,6 +203,7 @@ def onRefresh(self):
                 self.lstList1.insert(0,str(item))
                 i = i + 1
     conn.close()
+
 
 def onUpdate(self):
     try:
