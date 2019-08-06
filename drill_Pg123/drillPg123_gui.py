@@ -24,7 +24,7 @@ from tkinter import *
 import drillPg123_func
 
 
-def load_gui(self, dirfolder=None, desfolder=None):
+def load_gui(self):
     self.varDirName = StringVar()
     self.varDesName = StringVar()
 
@@ -44,17 +44,16 @@ def load_gui(self, dirfolder=None, desfolder=None):
     self.txt_desFolder.grid(row=3, column=1, columnspan=2, padx=(0, 0), pady=(10, 0), sticky=N + E + W)
 
     self.btnBrowseDir = tk.Button(self.master, text="Browse...", width=12, height=1,
-                                  command=lambda: drillPg123_func.get_directory(self, dirfolder))
+                                  command=lambda: drillPg123_func.get_directory(self))
     self.btnBrowseDir.grid(row=1, column=0, padx=(20, 20), pady=(10, 0), sticky=N + E + W + S)
 
     self.btnBrowseDes = tk.Button(self.master, text="Browse...", width=12, height=1,
-                                  command=lambda: drillPg123_func.get_destination(self, desfolder))
+                                  command=lambda: drillPg123_func.get_destination(self))
     self.btnBrowseDes.grid(row=3, column=0, padx=(20, 20), pady=(10, 0), sticky=N + E + W + S)
 
     self.btnChkMove = tk.Button(self.master, text="Run Program", width=12, height=2, wraplength=100,
-                                command=lambda: [drillPg123_func.check_files(dirfolder),
-                                                 drillPg123_func.move_files(dirfolder, desfolder),
-                                                 drillPg123_func.create_db(), drillPg123_func.addto_db(dirfolder),
+                                command=lambda: [drillPg123_func.check_files(), drillPg123_func.create_db(),
+                                                 drillPg123_func.addto_db(), drillPg123_func.move_files(),
                                                  drillPg123_func.submit(self)])
     self.btnChkMove.grid(row=4, column=0, padx=(20, 20), pady=(10, 0), sticky=N + E + W + S)
 

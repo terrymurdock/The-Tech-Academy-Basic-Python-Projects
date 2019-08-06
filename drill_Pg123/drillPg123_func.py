@@ -24,7 +24,7 @@ from tkinter import messagebox
 from tkinter.filedialog import askdirectory
 
 
-def center_window(self, w, h):  # pass in teh tkinter frame (master) reference and the w and h
+def center_window(self, w, h):  # pass in the tkinter frame (master) reference and the w and h
     # get user's screen width and height
     screen_width = self.master.winfo_screenwidth()
     screen_height = self.master.winfo_screenheight()
@@ -47,69 +47,62 @@ def ask_quit(self):
 
 
 # Browse file directories for source and set in txt_dirFolder field
-def get_directory(self, dirfolder):
+def get_directory(self):
+    global dirname
     dirname = askdirectory()
     if dirname:
         self.varDirName.set(dirname)
-    return dirfolder
 
 
 # Browse file directories for destination and set in txt_desFolder field
-def get_destination(self, desfolder):
+def get_destination(self):
+    global desname
     desname = askdirectory()
     if desname:
         self.varDesName.set(desname)
-    return desfolder
 
 
 # ===========================================================================================================
 # Find files with .txt extension in source; move to destination; print to console; create db and record files
 # ===========================================================================================================
-def check_files(dirfolder):
-    for file in os.listdir(dirfolder):
+def check_files():
+    for file in os.listdir("{}".format(dirname)):
         if file.endswith(".txt"):
-            file = os.path.join(dirfolder, file)
-            modified = time.ctime(os.path.getmtime(str(file)))
-            print("File ", file, "\t was modified on\t ", modified)
+            file = os.path.join("{}".format(dirname), file)
+            print("File ", file, "\t was modified on\t %s" % time.ctime(os.path.getmtime(str(file))))
 
 
-# Create database to record files moved
 def create_db():
-    conn = sqlite3.connect('text_files.db')
+    conn = sqlite3.connect('textfiles.db')
     with conn:
         cur = conn.cursor()
-        cur.execute("CREATE TABLE if not exists tbl_textfiles( \
+        cur.execute("CREATE TABLE IF NOT EXISTS tbl_filelist( \
             ID INTEGER PRIMARY KEY AUTOINCREMENT, \
             col_file TEXT, \
-            col_modtime TIMESTAMP\
-            );")
+            col_modtime \
+            )")
+        conn.commit()
+    conn.close()
+
+def addto_db():
+    conn = sqlite3.connect('textfiles.db')
+    with conn:
+        cur = conn.cursor()
+        for file in os.listdir("{}".format(dirname)):
+            if file.endswith(".txt"):
+                file = os.path.join("{}".format(dirname), file)
+                cur.execute("INSERT INTO tbl_filelist(col_file, col_modtime) VALUES (?, ?)", (file,"%s" % time.ctime(os.path.getmtime(str(file)))))
         conn.commit()
     conn.close()
 
 
-def addto_db(dirfolder):
-    conn = sqlite3.connect('text_files.db')
-    with conn:
-        cursor = conn.cursor()
-        for textfile in os.listdir(dirfolder):
-            if textfile.endswith(".txt"):
-                textfile = os.path.join(dirfolder, textfile)
-                modtime = time.ctime(os.path.getmtime(str(file)))
-                cursor.execute("INSERT INTO tbl_textfiles(col_file, col_modtime) VALUES (?, ?)",
-                               (textfile, modtime))
-        count = cursor.fetchall()
-    conn.commit()
-    conn.close()
-
-
 # Move files with .txt extension in source to destination
-def move_files(dirfolder, desfolder):
-    source = os.listdir(dirfolder)
-    destination = desfolder
-    for files in source:
-        if files.endswith(".txt"):
-            files = os.path.join(dirfolder, files)
-            shutil.move(files, destination)
+def move_files():
+    destination = ("{}".format(desname))
+    for file in os.listdir("{}".format(dirname)):
+        if file.endswith(".txt"):
+            file = os.path.join("{}".format(dirname), file)
+            shutil.move(file, destination)
 
 
 def submit(self):
