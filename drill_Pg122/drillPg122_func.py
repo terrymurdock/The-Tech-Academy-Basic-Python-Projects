@@ -15,10 +15,8 @@
 #                 the askdirectory() method and print it within your GUI’s text widget
 #
 # Tested OS:    This code was written and tested to work with Windows 10.
-import os
 
-# Be sure to import our other modules
-# so we can have access to them
+import os
 from tkinter import messagebox
 from tkinter.filedialog import askdirectory
 
